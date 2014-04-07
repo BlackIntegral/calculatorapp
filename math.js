@@ -20,14 +20,14 @@ function Data()//Declaring the struct used in linked list
 
 function run()//The first function that would run right after opening the application.
 {
-	document.write("<center><table width=300>");
+	document.write("<center><table width=250>");
 	document.write("<tr><td><center><form name='finput' autocomplete = 'off' action='javascript:io()' method='get'><input type='text' autofocus='autofocus' name='input' id='inp' onSubmit='io()'><input type='button' name='compute' value='go' onClick='io()'></form>");
 	document.write("</center></td></tr><tr><td><font face='Consolas' color='000000'><p id='output1'></p></font>");
 	document.write("<font face='Consolas' color='777777'><p id='output2'></p></font>");
 	document.write("<font face='Consolas' color='aaaaaa'><p id='output3'></p></font>");
 	document.write("<font face='Consolas' color='cccccc'><p id='output4'></p></font>");
 	document.write("<font face='Consolas' color='dadada'><p id='output5'></p></font>");
-	document.write("</td></tr></table><img src='chart.png' width=500>");
+	document.write("</td></tr></table>");
 	document.write("</center>");
 }
 
