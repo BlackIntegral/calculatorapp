@@ -4,6 +4,7 @@ var originalinput;
 var node = new Array(); // collecting data in the linked list
 var Bgn = new Data(); // Globally begin the linked list
 var End = new Data(); // Globally end the linked list
+var unitshow = new Array("kg","m","s","A","K","cd");
 
 function Data()//Declaring the struct used in linked list
 {
@@ -11,7 +12,7 @@ function Data()//Declaring the struct used in linked list
 	this.from = null;
 	this.value = null;
 	this.type = null;
-	this.unit = new Array();
+	this.unit = new Array(0,0,0,0,0,0);
 	this.relink = function(_goal){
 		_goal.to = this;
 		this.from = _goal;
@@ -20,13 +21,14 @@ function Data()//Declaring the struct used in linked list
 
 function run()//The first function that would run right after opening the application.
 {
-	document.write("<center><table width=250>");
-	document.write("<tr><td><center><form name='finput' autocomplete = 'off' action='javascript:io()' method='get'><input type='text' autofocus='autofocus' name='input' id='inp' onSubmit='io()'><input type='button' name='compute' value='go!' onClick='io()'></form>");
-	document.write("</center></td></tr><tr><td><font face='Consolas' color='000000'><p id='output1'></p></font>");
-	document.write("<font face='Consolas' color='777777'><p id='output2'></p></font>");
-	document.write("<font face='Consolas' color='aaaaaa'><p id='output3'></p></font>");
-	document.write("<font face='Consolas' color='cccccc'><p id='output4'></p></font>");
-	document.write("<font face='Consolas' color='dadada'><p id='output5'></p></font>");
+	document.write("<center><table width=220>");
+	document.write("<tr><td><center><form name='finput' autocomplete = 'off' action='javascript:io()' method='get'><input type='text' class = 'textfield' autofocus='autofocus' name='input' id='inp' onSubmit='io()'> <input type='button' class = 'submitfield' name='compute' value='go!' onClick='io()'></form>");
+	document.write("</center></td></tr><tr><td>");
+	document.write("<font size = 2 face='Consolas' color='ffffff'><p id='output1'></p></font>");
+	document.write("<font size = 2 face='Consolas' color='aae2aa'><p id='output2'></p></font>");
+	document.write("<font size = 2 face='Consolas' color='61c161'><p id='output3'></p></font>");
+	document.write("<font size = 2 face='Consolas' color='2ab02a'><p id='output4'></p></font>");
+	document.write("<font size = 2 face='Consolas' color='0f950f'><p id='output5'></p></font>");
 	document.write("</td></tr></table>");
 	document.write("</center>");
 }
@@ -36,6 +38,7 @@ function io()//input, operate, and output the result
 	var _reader = new Data();
 	var _begin = new Data();
 	var _end = new Data();
+	var unitdisplay;
 	input = document.getElementById("inp").value;
 	originalinput = input;
 	inp = document.getElementById("inp");
@@ -63,6 +66,10 @@ function io()//input, operate, and output the result
 			return;
 			_begin.type = "1";
 			_begin.value = _begin.to.value;
+			for(i=0;i<6;i++)
+			{
+				_begin.unit[i] = _begin.to.unit[i];
+			}
 			_end = _end.to;
 			_end.relink(_begin);
 			_end = _begin;
@@ -81,8 +88,16 @@ function io()//input, operate, and output the result
 	_reader=Bgn.to;	
 	do
 	{
+		unitdisplay="";
+		for(i=0;i<6;i++)
+		{
+			if(_reader.unit[i] != 0 && _reader.unit[i] != 1)
+			unitdisplay+=" "+unitshow[i]+"^"+_reader.unit[i];
+			if(_reader.unit[i] == 1)
+			unitdisplay+=" "+unitshow[i];
+		}
 		display1+=_reader.type+", ";
-		display2+=_reader.value+", ";
+		display2+=_reader.value+unitdisplay+", ";
 		_reader=_reader.to;
 	}while(_reader!=End);
 	
@@ -95,7 +110,7 @@ function io()//input, operate, and output the result
 	output4.innerHTML = output3.innerHTML;
 	output3.innerHTML = output2.innerHTML;
 	output2.innerHTML = output1.innerHTML;
-	output1.innerHTML = originalinput + "<p align='right'>= "+display1+"</p>";
+	output1.innerHTML = originalinput + "<p align='right'>= "+display2+"</p>";
 }
 
 function assign()//[global] assigning the initial conditions of each node
@@ -125,6 +140,11 @@ function assign()//[global] assigning the initial conditions of each node
 function encode()//[global] encoding units, constants, etc. into a specific code, e.g. au is coded to U01x .
 {
 	while(input.search("electron volt") != -1) input = input.replace("electron volt","U11x");
+	while(input.search("light years") != -1) input = input.replace("light years","U33x");
+	while(input.search("light-year") != -1) input = input.replace("light-year","U33x");
+	while(input.search("lightyears") != -1) input = input.replace("lightyears","U33x");
+	while(input.search("light year") != -1) input = input.replace("light year","U33x");
+	while(input.search("lightyear") != -1) input = input.replace("lightyear","U33x");
 	while(input.search("angstrom") != -1) input = input.replace("angstrom","U04x");
 	while(input.search("minutes") != -1) input = input.replace("minutes","U34x");
 	while(input.search("Maxwell") != -1) input = input.replace("Maxwell","U37x");
@@ -224,6 +244,68 @@ function encode()//[global] encoding units, constants, etc. into a specific code
 	while(input.search("T") != -1) input = input.replace("T","U47x");
 	while(input.search("V") != -1) input = input.replace("V","U48x");
 	while(input.search("W") != -1) input = input.replace("W","U50x");
+	while(input.search("Bohr radius") != -1) input = input.replace("Bohr radius","X01x");
+	while(input.search("bohr radius") != -1) input = input.replace("bohr radius","X01x");
+	while(input.search("Bohr's radius") != -1) input = input.replace("Bohr's radius","X01x");
+	while(input.search("bohr's radius") != -1) input = input.replace("bohr's radius","X01x");
+	while(input.search("Boltzmann constant") != -1) input = input.replace("Boltzmann constant","X02x");
+	while(input.search("boltzmann constant") != -1) input = input.replace("boltzmann constant","X02x");
+	while(input.search("Boltzmann's constant") != -1) input = input.replace("Boltzmann's constant","X02x");
+	while(input.search("boltzmann's constant") != -1) input = input.replace("boltzmann's constant","X02x");
+	while(input.search("k_B") != -1) input = input.replace("boltzmann's constant","X02x");
+	while(input.search("kB") != -1) input = input.replace("boltzmann's constant","X02x");
+	while(input.search("k_b") != -1) input = input.replace("boltzmann's constant","X02x");
+	while(input.search("kb") != -1) input = input.replace("boltzmann's constant","X02x");
+	while(input.search("c") != -1) input = input.replace("c","X03x");
+	while(input.search("speed of light") != -1) input = input.replace("speed of light","X03x");
+	while(input.search("Coulomb constant") != -1) input = input.replace("Coulomb constant","X04x");
+	while(input.search("coulomb constant") != -1) input = input.replace("coulomb constant","X04x");
+	while(input.search("Coulomb's constant") != -1) input = input.replace("Coulomb's constant","X04x");
+	while(input.search("coulomb's constant") != -1) input = input.replace("coulomb's constant","X04x");
+	while(input.search("k") != -1) input = input.replace("k","X04x");
+	while(input.search("electron mass") != -1) input = input.replace("electron mass","X05x");
+	while(input.search("m_e") != -1) input = input.replace("m_e","X05x");
+	while(input.search("em") != -1) input = input.replace("em","X05x");
+	while(input.search("electric constant") != -1) input = input.replace("electric constant","X06x");
+	while(input.search("epsilon") != -1) input = input.replace("epsilon","X06x");
+	while(input.search("elementary charge") != -1) input = input.replace("elementary charge","X07x");
+	while(input.search("electron charge") != -1) input = input.replace("electron charge","X07x");
+	while(input.search("proton charge") != -1) input = input.replace("proton charge","X07x");
+	while(input.search("q") != -1) input = input.replace("q","X07x");
+	while(input.search("q_e") != -1) input = input.replace("q_e","X07x");
+	while(input.search("Earth mass") != -1) input = input.replace("Earth mass","X08x");
+	while(input.search("earth mass") != -1) input = input.replace("earth mass","X08x");
+	while(input.search("Earth radius") != -1) input = input.replace("Earth radius","X09x");
+	while(input.search("earth radius") != -1) input = input.replace("earth radius","X09x");
+	while(input.search("Gravitational constant") != -1) input = input.replace("Gravitational constant","X10x");
+	while(input.search("gravitational constant") != -1) input = input.replace("gravitational constant","X10x");
+	while(input.search("gravitation constant") != -1) input = input.replace("gravitation constant","X10x");
+	while(input.search("Gravitation constant") != -1) input = input.replace("Gravitation constant","X10x");
+	while(input.search("gravity constant") != -1) input = input.replace("gravity constant","X10x");
+	while(input.search("Gravity constant") != -1) input = input.replace("Gravity constant","X10x");
+	while(input.search("G") != -1) input = input.replace("G","X10x");
+	while(input.search("hbar") != -1) input = input.replace("hbar","X11x");
+	while(input.search("h") != -1) input = input.replace("h","X12x");
+	while(input.search("magnetic constant") != -1) input = input.replace("magnetic constant","X13x");
+	while(input.search("Magnetic constant") != -1) input = input.replace("Magnetic constant","X13x");
+	while(input.search("mu") != -1) input = input.replace("mu","X13x");
+	while(input.search("proton mass") != -1) input = input.replace("proton mass","X14x");
+	while(input.search("m_p") != -1) input = input.replace("m_p","X14x");
+	while(input.search("pi") != -1) input = input.replace("pi","X15x");
+	while(input.search("Pi") != -1) input = input.replace("Pi","X15x");
+	while(input.search("PI") != -1) input = input.replace("PI","X15x");
+	while(input.search("Rydhberg constant") != -1) input = input.replace("Rydhberg constant","X16x");
+	while(input.search("rydhberg constant") != -1) input = input.replace("rydhberg constant","X16x");
+	while(input.search("Rydhberg's constant") != -1) input = input.replace("Rydhberg's constant","X16x");
+	while(input.search("rydhberg's constant") != -1) input = input.replace("rydhberg's constant","X16x");
+	while(input.search("Sun mass") != -1) input = input.replace("Sun mass","X17x");
+	while(input.search("sun mass") != -1) input = input.replace("sun mass","X17x");
+	while(input.search("Solar mass") != -1) input = input.replace("Solar mass","X17x");
+	while(input.search("solar mass") != -1) input = input.replace("solar mass","X17x");
+	while(input.search("Sun radius") != -1) input = input.replace("Sun radius","X18x");
+	while(input.search("sun radius") != -1) input = input.replace("sun radius","X18x");
+	while(input.search("Solar radius") != -1) input = input.replace("Solar radius","X18x");
+	while(input.search("solar radius") != -1) input = input.replace("solar radius","X18x");
 }
 
 function numerize()//[global] turning string of numbers into a single meaningful number, e.g. 0|1|2|.|0|5 is turned to 12.05 .
@@ -300,6 +382,24 @@ function decode(_begin,_end)//[local] decode the units, constants, and so on .
 				case 2:
 				_cache.value*=1.66053892e-27;
 				_cache.unit[0]+=1;
+				break;
+				case 3:
+				_cache.value*=1.01325e+5;
+				_cache.unit[0]+=1;
+				_cache.unit[1]-=1;
+				_cache.unit[2]-=2;
+				break;
+				case 4:
+				_cache.value*=1e-10;
+				_cache.unit[1]+=1;
+				break;
+				case 5:
+				_cache.value*=1;
+				_cache.unit[3]+=1;
+				break;
+				case 6:
+				_cache.value*=1;
+				_cache.unit[2]-=1;
 				break;
 				default:
 				return;
