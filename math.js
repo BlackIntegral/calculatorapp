@@ -21,16 +21,14 @@ function Data()//Declaring the struct used in linked list
 
 function run()//The first function that would run right after opening the application.
 {
-	document.write("<center><table width=220>");
-	document.write("<tr><td><center><form name='finput' autocomplete = 'off' action='javascript:io()' method='get'><input type='text' class = 'textfield' autofocus='autofocus' name='input' id='inp' onSubmit='io()'> <input type='button' class = 'submitfield' name='compute' value='go!' onClick='io()'></form>");
-	document.write("</center></td></tr><tr><td>");
+	document.write("<center>");
+	document.write("<form name='finput' autocomplete = 'off' action='javascript:io()' method='get'><input type='text' class = 'textfield' autofocus='autofocus' name='input' id='inp' onSubmit='io()'> <input type='button' class = 'submitfield' name='compute' value='go!' onClick='io()'></form>");
+	document.write("</center>");
 	document.write("<font size = 2 face='Consolas' color='ffffff'><p id='output1'></p></font>");
 	document.write("<font size = 2 face='Consolas' color='aae2aa'><p id='output2'></p></font>");
 	document.write("<font size = 2 face='Consolas' color='61c161'><p id='output3'></p></font>");
 	document.write("<font size = 2 face='Consolas' color='2ab02a'><p id='output4'></p></font>");
 	document.write("<font size = 2 face='Consolas' color='0f950f'><p id='output5'></p></font>");
-	document.write("</td></tr></table>");
-	document.write("</center>");
 }
 
 function io()//input, operate, and output the result
