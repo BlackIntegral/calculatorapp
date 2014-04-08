@@ -23,12 +23,8 @@ function run()//The first function that would run right after opening the applic
 {
 	document.write("<center>");
 	document.write("<form name='finput' autocomplete = 'off' action='javascript:io()' method='get'><input type='text' class = 'textfield' autofocus='autofocus' name='input' id='inp' onSubmit='io()'> <input type='button' class = 'submitfield' name='compute' value='go!' onClick='io()'></form>");
+	document.write("<textarea readonly='readonly' id='output' wrap='off' class='outputfield'></textarea>");
 	document.write("</center>");
-	document.write("<font size = 2 face='Consolas' color='ffffff'><p id='output1'></p></font>");
-	document.write("<font size = 2 face='Consolas' color='aae2aa'><p id='output2'></p></font>");
-	document.write("<font size = 2 face='Consolas' color='61c161'><p id='output3'></p></font>");
-	document.write("<font size = 2 face='Consolas' color='2ab02a'><p id='output4'></p></font>");
-	document.write("<font size = 2 face='Consolas' color='0f950f'><p id='output5'></p></font>");
 }
 
 function io()//input, operate, and output the result
@@ -95,20 +91,13 @@ function io()//input, operate, and output the result
 			unitdisplay+=" "+unitshow[i];
 		}
 		display1+=_reader.type+", ";
-		display2+=_reader.value+unitdisplay+", ";
+		
+		display2+=_reader.value.toPrecision(6)+" "+unitdisplay+" ";
 		_reader=_reader.to;
 	}while(_reader!=End);
 	
-	output1 = document.getElementById("output1");
-	output2 = document.getElementById("output2");
-	output3 = document.getElementById("output3");
-	output4 = document.getElementById("output4");
-	output5 = document.getElementById("output5");
-	output5.innerHTML = output4.innerHTML;
-	output4.innerHTML = output3.innerHTML;
-	output3.innerHTML = output2.innerHTML;
-	output2.innerHTML = output1.innerHTML;
-	output1.innerHTML = originalinput + "<p align='right'>= "+display2+"</p>";
+	output = document.getElementById("output");
+	output.innerHTML = originalinput + "\n&nbsp;&nbsp;&nbsp;= "+display2+"\n"+output.innerHTML;
 }
 
 function assign()//[global] assigning the initial conditions of each node
@@ -396,6 +385,10 @@ function decode(_begin,_end)//[local] decode the units, constants, and so on .
 				_cache.unit[3]+=1;
 				break;
 				case 6:
+				_cache.value*=1;
+				_cache.unit[2]-=1;
+				break;
+				case 7:
 				_cache.value*=1;
 				_cache.unit[2]-=1;
 				break;
