@@ -1,6 +1,9 @@
 var N; //length of the input data
 var input;
+var display;
 var originalinput;
+var default_errorcode = "unknown";
+var errorcode = default_errorcode;
 var node = new Array(); // collecting data in the linked list
 var Bgn = new Data(); // Globally begin the linked list
 var End = new Data(); // Globally end the linked list
@@ -21,7 +24,7 @@ function Data()//Declaring the struct used in linked list
 
 function run()//The first function that would run right after opening the application.
 {
-	document.write("<center>");
+	document.write("Hi<br><br><br><br><br><br><center>");
 	document.write("<form name='finput' autocomplete = 'off' action='javascript:io()' method='get'><input type='text' class = 'textfield' autofocus='autofocus' name='input' id='inp' onSubmit='io()'> <input type='button' class = 'submitfield' name='compute' value='go!' onClick='io()'></form>");
 	document.write("<textarea readonly='readonly' id='output' wrap='off' class='outputfield'></textarea>");
 	document.write("</center>");
@@ -29,10 +32,12 @@ function run()//The first function that would run right after opening the applic
 
 function io()//input, operate, and output the result
 {
-	var _reader = new Data();
 	var _begin = new Data();
 	var _end = new Data();
+	var _num = new Data();
+	var _bracket_cnt = new Data();
 	var unitdisplay;
+	var bracket_cnt = 0;
 	input = document.getElementById("inp").value;
 	originalinput = input;
 	inp = document.getElementById("inp");
@@ -44,60 +49,84 @@ function io()//input, operate, and output the result
 	numerize();
 	despace();
 	_end = Bgn;
-	while(_end != End)
+	_bracket_cnt = Bgn;
+	while(_bracket_cnt != End)
 	{
-		if(_end.type == ")")
+		if(_bracket_cnt.type == "(")
+		bracket_cnt++;
+		if(_bracket_cnt.type == ")")
+		bracket_cnt--;
+		_bracket_cnt = _bracket_cnt.to;
+	}
+	if(bracket_cnt == 0)
+	{
+		while(_end != End)
 		{
-			_begin = _end.from;
-			while(_begin.type != "(")
+			if(_end.type == ")")
 			{
-				_begin = _begin.from;
-			}
-			// Begin local operations
-			decode(_begin,_end);
-			// End local operations
-			if(_begin.to.to.type != ")")
-			return;
-			_begin.type = "1";
-			_begin.value = _begin.to.value;
-			for(i=0;i<6;i++)
-			{
-				_begin.unit[i] = _begin.to.unit[i];
+				_begin = _end;
+				while(_begin.type != "(")
+				{
+					_begin = _begin.from;
+				}
+				// Begin local operations ---------------------------------------
+				sign_adjust(_begin,_end);
+				E(_begin,_end);
+				decode(_begin,_end);
+				power(_begin,_end);
+				devision(_begin,_end);
+				product(_begin,_end);
+				sum(_begin,_end);
+				// End local operations -----------------------------------------
+				if(_begin.to.to.type != ")")
+				return;
+				_begin.type = "1";
+				_begin.value = _begin.to.value;
+				for(i=0;i<6;i++)
+				{
+					_begin.unit[i] = _begin.to.unit[i];
+				}
+				_end = _end.to;
+				_end.relink(_begin);
+				_end = _begin;
 			}
 			_end = _end.to;
-			_end.relink(_begin);
-			_end = _begin;
 		}
-		_end = _end.to;
-	}
-	_begin = Bgn;
-	_end = End;
-	// Begin local operations
-	decode(_begin,_end);
-	// End local operations
-	
-	
-	display1 = "";
-	display2 = "";
-	_reader=Bgn.to;	
-	do
-	{
-		unitdisplay="";
-		for(i=0;i<6;i++)
-		{
-			if(_reader.unit[i] != 0 && _reader.unit[i] != 1)
-			unitdisplay+=" "+unitshow[i]+"^"+_reader.unit[i];
-			if(_reader.unit[i] == 1)
-			unitdisplay+=" "+unitshow[i];
-		}
-		display1+=_reader.type+", ";
+		_begin = Bgn;
+		_end = End;
+		// Begin local operations -----------------------------------------------
+		sign_adjust(_begin,_end);
+		E(_begin,_end);
+		decode(_begin,_end);
+		power(_begin,_end);
+		devision(_begin,_end);
+		product(_begin,_end);
+		sum(_begin,_end);
+		// End local operations -------------------------------------------------
 		
-		display2+=_reader.value.toPrecision(6)+" "+unitdisplay+" ";
-		_reader=_reader.to;
-	}while(_reader!=End);
-	
-	output = document.getElementById("output");
-	output.innerHTML = originalinput + "\n&nbsp;&nbsp;&nbsp;= "+display2+"\n"+output.innerHTML;
+		if(_begin.to.type == "1" && _begin.to.to.type == "}")
+		{
+			_num = _begin.to;
+			unitdisplay = "";
+			for(i=0;i<6;i++)
+			{
+				if(_num.unit[i] != 0 && _num.unit[i] != 1)
+				unitdisplay += " "+unitshow[i]+"^"+_num.unit[i];
+				if(_num.unit[i] == 1)
+				unitdisplay += " "+unitshow[i];
+			}
+			display = _begin.to.value.toPrecision(6)+" "+unitdisplay+" ";
+			errorcode = "fine";
+		}
+		
+		output = document.getElementById("output");
+	}
+	else
+	errorcode = "incomplete parenthesis";
+	if(errorcode == "fine")
+	output.innerHTML = originalinput + "\n&nbsp;&nbsp;&nbsp;= "+display+"\n\n"+output.innerHTML;
+	else
+	output.innerHTML = originalinput + "\n&nbsp;&nbsp;&nbsp;error: "+errorcode+"\n\n"+output.innerHTML;
 }
 
 function assign()//[global] assigning the initial conditions of each node
@@ -122,6 +151,219 @@ function assign()//[global] assigning the initial conditions of each node
 	node[N+1].type = "}";
 	Bgn = node[0];
 	End = node[N+1];
+}
+
+function numerize()//[global] turning string of numbers into a single meaningful number, e.g. 0|1|2|.|0|5 is turned to 12.05 .
+{
+
+	var _begin = new Data();
+	var _end = new Data();
+	var _cache = new Data();
+	_begin = Bgn;
+	while(_begin != End)
+	{
+		var order = 10;
+		if(_begin.type == "1")
+		{
+			_end = _begin.to;
+			while(_end.type == "1")
+			{
+				_begin.value = _begin.value*10 + _end.value;
+				_end = _end.to;
+			}
+			if(_end.type == "." && _end.to.type == "1")
+			{
+				_end = _end.to;
+				while(_end.type == "1")
+				{
+					_begin.value = _begin.value + _end.value/order;
+					order*=10;
+					_end = _end.to;
+				}
+			}
+			_end.relink(_begin);
+		}
+		_begin = _begin.to;
+	}
+}
+
+function despace()//[global] delete unnecessary spaces .
+{
+	var _begin = new Data();
+	var _end = new Data();
+	var _cache = new Data();
+	_begin = Bgn;
+	while(_begin != End)
+	{
+		if(_begin.type == " ")
+		{
+			_cache = _begin.from;
+			_begin = _begin.to;
+			_begin.relink(_cache);
+			_begin = _cache;
+		}
+		_begin = _begin.to;
+	}
+}
+
+function sign_adjust(_begin,_end)
+{
+	var _sign = new Data();
+	_sign = _begin.to;
+	while(_sign != _end)
+	{
+		if((_sign.type == "+" || _sign.type == "-") && _sign.to.type != "1")
+		errorcode = "signing syntax";
+		if(_sign.type == "-" && _sign.to.type == "1")
+		{
+			_sign.to.value*=-1;
+			_sign.type = "+";
+		}
+		if(_sign.type == "+" && _sign.to.type == "1")
+		{
+			if(_sign.from.type == "*" || _sign.from.type == "/" || _sign.from.type == "e" || _sign.from.type == "E" || _sign.from.type == "(" || _sign.from.type == "{")
+			{
+				_sign.to.relink(_sign.from);
+			}
+		}
+		_sign = _sign.to;
+	}
+}
+
+function E(_begin,_end)//[local] Evaluating scientific notations such as 1.2e+20;
+{
+	var unitcheck;
+	var _E = new Data();
+	var _cache = new Data();
+	_E = _begin.to;
+	while(_E != _end)
+	{
+		if( (_E.type == "e" || _E.type == "E") && _E.from.type == "1" && _E.to.type == "1")
+		{
+			unitcheck = 0;
+			for(i=0;i<6;i++)
+			{
+				unitcheck+=Math.abs(_E.from.unit[i]);
+				unitcheck+=Math.abs(_E.to.unit[i]);
+			}
+			if(unitcheck == 0)
+			{
+				_cache = _E.to.to;
+				_E.from.value = _E.from.value*Math.pow(10,_E.to.value);
+				_cache.relink(_E.from);
+				_E = _E.from;
+			}
+			else
+			errorcode = "unit error";
+		}
+		else if( (_E.type == "e" || _E.type == "E") && (_E.from.type != "1" || _E.to.type != "1"))
+		errorcode = "scientific notation syntax";
+		_E = _E.to;
+	}
+}
+
+function devision(_begin,_end)
+{
+	var _slash = new Data();
+	var _cache = new Data();
+	_slash = _begin.to;
+	while(_slash != _end)
+	{
+		if(_slash.type == "/" && _slash.from.type == "1" && _slash.to.type == "1")
+		{
+			_cache = _slash.to.to;
+			_slash.from.value/=_slash.to.value;
+			for(i=0;i<6;i++)
+			_slash.from.unit[i]-=_slash.to.unit[i];
+			_cache.relink(_slash.from);
+			_slash = _slash.from;
+		}
+		if(_slash.type == "/" && (_slash.from.type != "1" || _slash.to.type != "1"))
+		errorcode = "division syntax";
+		_slash = _slash.to;
+	}
+}
+
+function product(_begin,_end)
+{
+	var _star = new Data();
+	var _cache = new Data();
+	_star = _begin.to;
+	while(_star != _end)
+	{
+		if(_star.type == "*" && _star.from.type == "1" && _star.to.type == "1")
+		{
+			_cache = _star.to.to;
+			_star.from.value*=_star.to.value;
+			for(i=0;i<6;i++)
+			_star.from.unit[i]+=_star.to.unit[i];
+			_cache.relink(_star.from);
+			_star = _star.from;
+		}
+		if(_star.type == "*" && (_star.from.type != "1" || _star.to.type != "1"))
+		errorcode = "multiplication syntax";
+		_star = _star.to;
+	}
+}
+
+function sum(_begin,_end)
+{
+	var _plus = new Data();
+	var _cache = new Data();
+	var unitcheck;
+	_plus = _begin.to;
+	while(_plus != _end)
+	{
+		if(_plus.type == "+" && _plus.from.type == "1" && _plus.to.type == "1")
+		{
+			unitcheck = 0;
+			_cache = _plus.to.to;
+			for(i=0;i<6;i++)
+			unitcheck+=Math.abs((_plus.from.unit[i])-(_plus.to.unit[i]));
+			if(unitcheck == 0)
+			{
+				_plus.from.value+=_plus.to.value;
+				_cache.relink(_plus.from);
+				_plus = _plus.from;
+			}
+			else
+			errorcode = "unit error"
+		}
+		_plus = _plus.to;
+	}
+}
+
+function power(_begin,_end)
+{
+	var unitcheck;
+	var _hat = new Data();
+	var _cache = new Data();
+	_hat = _begin.to;
+	while(_hat != _end)
+	{
+		if(_hat.type == "^" && _hat.from.type == "1" && _hat.to.type == "1")
+		{
+			unitcheck = 0;
+			for(i=0;i<6;i++)
+			{
+				unitcheck+=Math.abs(_hat.to.unit[i]);
+			}
+			if(unitcheck == 0)
+			{
+				_cache = _hat.to.to;
+				_hat.from.value = Math.pow(_hat.from.value,_hat.to.value);
+				for(i=0;i<6;i++)
+				_hat.from.unit[i]*=_hat.to.value;
+				_cache.relink(_hat.from);
+				_hat = _hat.from;
+			}
+			else
+			errorcode = "unit error";
+		}
+		else if( _hat.type == "^" && (_hat.from.type != "1" || _hat.to.type != "1"))
+		errorcode = "scientific notation syntax";
+		_hat = _hat.to;
+	}
 }
 
 function encode()//[global] encoding units, constants, etc. into a specific code, e.g. au is coded to U01x .
@@ -295,59 +537,6 @@ function encode()//[global] encoding units, constants, etc. into a specific code
 	while(input.search("solar radius") != -1) input = input.replace("solar radius","X18x");
 }
 
-function numerize()//[global] turning string of numbers into a single meaningful number, e.g. 0|1|2|.|0|5 is turned to 12.05 .
-{
-
-	var _begin = new Data();
-	var _end = new Data();
-	var _cache = new Data();
-	_begin = Bgn;
-	while(_begin != End)
-	{
-		var order = 10;
-		if(_begin.type == "1")
-		{
-			_end = _begin.to;
-			while(_end.type == "1")
-			{
-				_begin.value = _begin.value*10 + _end.value;
-				_end = _end.to;
-			}
-			if(_end.type == "." && _end.to.type == "1")
-			{
-				_end = _end.to;
-				while(_end.type == "1")
-				{
-					_begin.value = _begin.value + _end.value/order;
-					order*=10;
-					_end = _end.to;
-				}
-			}
-			_end.relink(_begin);
-		}
-		_begin = _begin.to;
-	}
-}
-
-function despace()//[global] delete unnecessary spaces .
-{
-	var _begin = new Data();
-	var _end = new Data();
-	var _cache = new Data();
-	_begin = Bgn;
-	while(_begin != End)
-	{
-		if(_begin.type == " ")
-		{
-			_cache = _begin.from;
-			_begin = _begin.to;
-			_begin.relink(_cache);
-			_begin = _cache;
-		}
-		_begin = _begin.to;
-	}
-}
-
 function decode(_begin,_end)//[local] decode the units, constants, and so on .
 {
 	var _scan = new Data();
@@ -390,7 +579,11 @@ function decode(_begin,_end)//[local] decode the units, constants, and so on .
 				break;
 				case 7:
 				_cache.value*=1;
-				_cache.unit[2]-=1;
+				_cache.unit[5]+=1;
+				break;
+				case 8:
+				_cache.value*=1;
+				_cache.unit[5]+=1;
 				break;
 				default:
 				return;
