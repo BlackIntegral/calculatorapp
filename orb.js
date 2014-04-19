@@ -3,6 +3,7 @@ var input;
 var checkin;
 var display = "??";
 var originalinput;
+var s_value = 0;
 var default_errorcode = "unknown";
 var errorcode = default_errorcode;
 var node = new Array(); // collecting data in the linked list
@@ -26,25 +27,35 @@ function Data()//Declaring the struct used in linked list
 		};
 }
 
-function run()//The first function that would run right after opening the application.
+function Del()
 {
-	document.write("<br><br><br><br><br><center>");
-	document.write("<form name='finput' autocomplete = 'off' action='javascript:io()' method='get'><input type='text' class = 'textfield' autofocus='autofocus' name='input' id='inp' onSubmit='io()'> <input type='button' class = 'submitfield' name='compute' value='go!' onClick='io()'></form>");
-	document.write("<textarea readonly='readonly' id='output' wrap='off' class='outputfield'></textarea>");
-	document.write("<br><br>");
-	document.write("<input type='button' class = 'char' value='&mu;' onClick='Add(\"&mu;\")'>");
-	document.write(" <input type='button' class = 'char' value='&Omega;' onClick='Add(\"&Omega;\")'>");
-	document.write("<font size=1px><br><br></font>");
-	document.write("<input type='button' class = 'other' value='help' onClick='Help()'>");
-	document.write(" <input type='button' class = 'other' value='units' onClick='Units()'>");
-	document.write(" <input type='button' class = 'other' value='const' onClick='Const()'>");
-	document.write(" <input type='button' class = 'other' value='clear' onClick='Clear()'>");
-	document.write(" <input type='button' class = 'other' value='info' onClick='Info()'>");
-	document.write("</center>");
+	var _inp = document.getElementById("inp").value;
+	var _N = _inp.length;
+	document.getElementById("inp").value = _inp.slice(0,_N-1);
+}
+
+function Shift()
+{
+	switch(s_value)
+	{
+		case 0:
+		document.getElementById("Sml").style.visibility='hidden';
+		document.getElementById("Cap").style.visibility='visible';
+		s_value = 1;
+		break;
+		case 1:
+		document.getElementById("Sml").style.visibility='visible';
+		document.getElementById("Cap").style.visibility='hidden';
+		s_value = 0;
+		break;
+		default:
+		break;
+	}
 }
 
 function Help()
 {
+	output = document.getElementById("output");
 	output.innerHTML = "------------------------------------"+"\n";
 	output.innerHTML += "Available Operations\n";
 	output.innerHTML += "-----------------------------------"+"\n";
@@ -75,18 +86,16 @@ function Help()
 	output.innerHTML += " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7 - 4 = 7 + (-4)"+"\n";
 	output.innerHTML += " 4) Scientific notation"+"\n";
 	output.innerHTML += " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.1e+3*3 = (2.1e+3)*3"+"\n";
-	output.innerHTML += " 5) Prefixes"+"\n";
-	output.innerHTML += " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2 cm = (2c) m"+"\n";
-	output.innerHTML += " 6) Functions & Units"+"\n";
+	output.innerHTML += " 5) Functions & Units"+"\n";
 	output.innerHTML += " (left to right)"+"\n";
 	output.innerHTML += " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sin1deg = (sin(1)) deg"+"\n";
-	output.innerHTML += " 7) Exponentiation"+"\n";
+	output.innerHTML += " 6) Exponentiation"+"\n";
 	output.innerHTML += " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2^3*4 = 8*4"+"\n";
-	output.innerHTML += " 8) Division"+"\n";
+	output.innerHTML += " 7) Division"+"\n";
 	output.innerHTML += " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8/4*2 = 2*2"+"\n";
-	output.innerHTML += " 9) Multiplication"+"\n";
+	output.innerHTML += " 8) Multiplication"+"\n";
 	output.innerHTML += " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3*4+5 = 12 + 5"+"\n";
-	output.innerHTML += " 10) Addition"+"\n";
+	output.innerHTML += " 9) Addition"+"\n";
 	output.innerHTML += ""+"\n";
 	output.innerHTML += "------------------------------------"+"\n";
 	output.innerHTML += "Unit Conversion\n";
@@ -116,6 +125,7 @@ function Help()
 
 function Info()
 {
+	output = document.getElementById("output");
 	output.innerHTML = "------------------------------------"+"\n";
 	output.innerHTML += "Orb v1.0 (c), 2014\n";
 	output.innerHTML += "The JS scientific calculator.\n";
@@ -129,6 +139,7 @@ function Info()
 
 function Const()
 {
+	output = document.getElementById("output");
 	output.innerHTML = "------------------------------------"+"\n";
 	output.innerHTML += "Constants list\n";
 	output.innerHTML += "-----------------------------------"+"\n";
@@ -171,6 +182,7 @@ function Const()
 
 function Units()
 {
+	output = document.getElementById("output");
 	output.innerHTML = "------------------------------------"+"\n";
 	output.innerHTML += "Units list\n";
 	output.innerHTML += "-----------------------------------"+"\n";
@@ -301,6 +313,7 @@ function io()//input, operate, and output the result
 	assign();
 	numerize();
 	despace();
+	prefix(Bgn,End);
 	_end = Bgn;
 	_bracket_cnt = Bgn;
 	while(_bracket_cnt != End)
@@ -326,7 +339,6 @@ function io()//input, operate, and output the result
 				Factorial(_begin,_end);
 				sign_adjust(_begin,_end);
 				E(_begin,_end);
-				prefix(_begin,_end);
 				decode(_begin,_end);
 				sign_adjust(_begin,_end);
 				power(_begin,_end);
@@ -354,7 +366,6 @@ function io()//input, operate, and output the result
 		Factorial(_begin,_end);
 		sign_adjust(_begin,_end);
 		E(_begin,_end);
-		prefix(_begin,_end);
 		decode(_begin,_end);
 		sign_adjust(_begin,_end);
 		power(_begin,_end);
@@ -394,12 +405,12 @@ function io()//input, operate, and output the result
 			new_unit = originalinput.replace("in","");
 			new_value = Ans.value/_num.value;
 			display = format(new_value.toPrecision(6))+" "+new_unit+" ";
-			output.innerHTML = originalinput + "\n&nbsp;&nbsp;&nbsp;= "+display+"\n\n"+output.innerHTML;
+			output.innerHTML = originalinput + "\n&nbsp;&nbsp;&nbsp;= "+display+"\n"+output.innerHTML;
 		}
 		else
 		{
 			errorcode = "unit error : "+unitcheck;
-			output.innerHTML = originalinput + "\n&nbsp;&nbsp;&nbsp;error: "+errorcode+"\n\n"+output.innerHTML;
+			output.innerHTML = originalinput + "\n&nbsp;&nbsp;&nbsp;error: "+errorcode+"\n"+output.innerHTML;
 		}
 		_num.value = _Ans.value;
 		for(i=0;i<6;i++)
@@ -408,9 +419,9 @@ function io()//input, operate, and output the result
 	else
 	{
 		if(errorcode == "fine" && display != "??")
-		output.innerHTML = originalinput + "\n&nbsp;&nbsp;&nbsp;= "+display+"\n\n"+output.innerHTML;
+		output.innerHTML = originalinput + "\n&nbsp;&nbsp;&nbsp;= "+display+"\n"+output.innerHTML;
 		else
-		output.innerHTML = originalinput + "\n&nbsp;&nbsp;&nbsp;error: "+errorcode+"\n\n"+output.innerHTML;
+		output.innerHTML = originalinput + "\n&nbsp;&nbsp;&nbsp;error: "+errorcode+"\n"+output.innerHTML;
 	}
 	errorcode = default_errorcode;
 	display = "??";
@@ -797,10 +808,10 @@ function encode()//[global] encoding units, constants, etc. into a specific code
 	while(input.search("Maxwell") != -1) input = input.replace("Maxwell","U34x");
 	while(input.search("seconds") != -1) input = input.replace("seconds","U40x");
 	while(input.search("epsilon") != -1) input = input.replace("epsilon","X06x");
-	while(input.search("TeV/c\\^2") != -1) input = input.replace("TeV/c^2","P16xU12x");
-	while(input.search("GeV/c\\^2") != -1) input = input.replace("GeV/c^2","P15xU12x");
-	while(input.search("ceV/c\\^2") != -1) input = input.replace("ceV/c^2","P09xU12x");
-	while(input.search("meV/c\\^2") != -1) input = input.replace("meV/c^2","P08xU12x");
+	while(input.search("TeV/c\\^2") != -1) input = input.replace("TeV/c^2","PR16xU12x");
+	while(input.search("GeV/c\\^2") != -1) input = input.replace("GeV/c^2","PR15xU12x");
+	while(input.search("ceV/c\\^2") != -1) input = input.replace("ceV/c^2","PR09xU12x");
+	while(input.search("meV/c\\^2") != -1) input = input.replace("meV/c^2","PR08xU12x");
 	while(input.search("Coulomb") != -1) input = input.replace("Coulomb","U08x");
 	while(input.search("coulomb") != -1) input = input.replace("coulomb","U08x");
 	while(input.search("Kelvins") != -1) input = input.replace("Kelvins","U24x");
@@ -839,15 +850,15 @@ function encode()//[global] encoding units, constants, etc. into a specific code
 	while(input.search("metre") != -1) input = input.replace("metre","U33x");
 	while(input.search("tonne") != -1) input = input.replace("tonne","U43x");
 	while(input.search("years") != -1) input = input.replace("years","U49x");
-	while(input.search("yocto") != -1) input = input.replace("yocto","P01x");
-	while(input.search("zepto") != -1) input = input.replace("zepto","P02x");
-	while(input.search("femto") != -1) input = input.replace("femto","P04x");
-	while(input.search("micro") != -1) input = input.replace("micro","P07x");
-	while(input.search("milli") != -1) input = input.replace("milli","P08x");
-	while(input.search("centi") != -1) input = input.replace("centi","P09x");
-	while(input.search("hecto") != -1) input = input.replace("hecto","P12x");
-	while(input.search("zetta") != -1) input = input.replace("zetta","P19x");
-	while(input.search("yotta") != -1) input = input.replace("yotta","P20x");
+	while(input.search("yocto") != -1) input = input.replace("yocto","PR01x");
+	while(input.search("zepto") != -1) input = input.replace("zepto","PR02x");
+	while(input.search("femto") != -1) input = input.replace("femto","PR04x");
+	while(input.search("micro") != -1) input = input.replace("micro","PR07x");
+	while(input.search("milli") != -1) input = input.replace("milli","PR08x");
+	while(input.search("centi") != -1) input = input.replace("centi","PR09x");
+	while(input.search("hecto") != -1) input = input.replace("hecto","PR12x");
+	while(input.search("zetta") != -1) input = input.replace("zetta","PR19x");
+	while(input.search("yotta") != -1) input = input.replace("yotta","PR20x");
 	while(input.search("pound") != -1) input = input.replace("pound","U25x");
 	while(input.search("yards") != -1) input = input.replace("yards","U48x");
 	while(input.search("Farad") != -1) input = input.replace("Farad","U14x");
@@ -889,16 +900,16 @@ function encode()//[global] encoding units, constants, etc. into a specific code
 	while(input.search("yard") != -1) input = input.replace("yard","U48x");
 	while(input.search("year") != -1) input = input.replace("year","U49x");
 	while(input.search("hbar") != -1) input = input.replace("hbar","X11x");
-	while(input.search("atta") != -1) input = input.replace("atta","P03x");
-	while(input.search("pico") != -1) input = input.replace("pico","P05x");
-	while(input.search("nano") != -1) input = input.replace("nano","P06x");
-	while(input.search("deci") != -1) input = input.replace("deci","P10x");
-	while(input.search("deca") != -1) input = input.replace("deca","P11x");
-	while(input.search("kilo") != -1) input = input.replace("kilo","P13x");
-	while(input.search("mega") != -1) input = input.replace("mega","P14x");
-	while(input.search("giga") != -1) input = input.replace("giga","P15x");
-	while(input.search("tera") != -1) input = input.replace("tera","P16x");
-	while(input.search("peta") != -1) input = input.replace("peta","P17x");
+	while(input.search("atta") != -1) input = input.replace("atta","PR03x");
+	while(input.search("pico") != -1) input = input.replace("pico","PR05x");
+	while(input.search("nano") != -1) input = input.replace("nano","PR06x");
+	while(input.search("deci") != -1) input = input.replace("deci","PR10x");
+	while(input.search("deca") != -1) input = input.replace("deca","PR11x");
+	while(input.search("kilo") != -1) input = input.replace("kilo","PR13x");
+	while(input.search("mega") != -1) input = input.replace("mega","PR14x");
+	while(input.search("giga") != -1) input = input.replace("giga","PR15x");
+	while(input.search("tera") != -1) input = input.replace("tera","PR16x");
+	while(input.search("peta") != -1) input = input.replace("peta","PR17x");
 	while(input.search("Volt") != -1) input = input.replace("Volt","U45x");
 	while(input.search("volt") != -1) input = input.replace("volt","U45x");
 	while(input.search("Watt") != -1) input = input.replace("Watt","U47x");
@@ -921,32 +932,32 @@ function encode()//[global] encoding units, constants, etc. into a specific code
 	while(input.search("ohm") != -1) input = input.replace("ohm","U36x");
 	while(input.search("rad") != -1) input = input.replace("rad","U39x");
 	while(input.search("sec") != -1) input = input.replace("sec","U40x");
-	while(input.search("exa") != -1) input = input.replace("exa","P18x");
+	while(input.search("exa") != -1) input = input.replace("exa","PR18x");
 	while(input.search("ans") != -1) input = input.replace("ans","Q01x");
 	while(input.search("Ans") != -1) input = input.replace("Ans","Q01x");
 	while(input.search("ANS") != -1) input = input.replace("ANS","Q01x");
 	while(input.search("Amp") != -1) input = input.replace("Amp","U05x");
 	while(input.search("amp") != -1) input = input.replace("amp","U05x");
-	while(input.search("TeV") != -1) input = input.replace("TeV","P16xU11x");
-	while(input.search("THz") != -1) input = input.replace("THz","P16xU19x");
-	while(input.search("Thz") != -1) input = input.replace("Thz","P16xU19x");
-	while(input.search("TPa") != -1) input = input.replace("TPa","P16xU38x");
-	while(input.search("TWb") != -1) input = input.replace("TWb","P16xU46x");
-	while(input.search("GeV") != -1) input = input.replace("GeV","P15xU11x");
-	while(input.search("GHz") != -1) input = input.replace("GHz","P15xU19x");
-	while(input.search("Ghz") != -1) input = input.replace("Ghz","P15xU19x");
-	while(input.search("GPa") != -1) input = input.replace("GPa","P15xU38x");
-	while(input.search("GWb") != -1) input = input.replace("GWb","P15xU46x");
-	while(input.search("ceV") != -1) input = input.replace("ceV","P09xU11x");
-	while(input.search("cHz") != -1) input = input.replace("cHz","P09xU19x");
-	while(input.search("chz") != -1) input = input.replace("chz","P09xU19x");
-	while(input.search("cPa") != -1) input = input.replace("cPa","P09xU38x");
-	while(input.search("cWb") != -1) input = input.replace("cWb","P09xU46x");
-	while(input.search("meV") != -1) input = input.replace("meV","P08xU11x");
-	while(input.search("mHz") != -1) input = input.replace("mHz","P08xU19x");
-	while(input.search("mhz") != -1) input = input.replace("mhz","P08xU19x");
-	while(input.search("mPa") != -1) input = input.replace("mPa","P08xU38x");
-	while(input.search("mWb") != -1) input = input.replace("mWb","P08xU46x");
+	while(input.search("TeV") != -1) input = input.replace("TeV","PR16xU11x");
+	while(input.search("THz") != -1) input = input.replace("THz","PR16xU19x");
+	while(input.search("Thz") != -1) input = input.replace("Thz","PR16xU19x");
+	while(input.search("TPa") != -1) input = input.replace("TPa","PR16xU38x");
+	while(input.search("TWb") != -1) input = input.replace("TWb","PR16xU46x");
+	while(input.search("GeV") != -1) input = input.replace("GeV","PR15xU11x");
+	while(input.search("GHz") != -1) input = input.replace("GHz","PR15xU19x");
+	while(input.search("Ghz") != -1) input = input.replace("Ghz","PR15xU19x");
+	while(input.search("GPa") != -1) input = input.replace("GPa","PR15xU38x");
+	while(input.search("GWb") != -1) input = input.replace("GWb","PR15xU46x");
+	while(input.search("ceV") != -1) input = input.replace("ceV","PR09xU11x");
+	while(input.search("cHz") != -1) input = input.replace("cHz","PR09xU19x");
+	while(input.search("chz") != -1) input = input.replace("chz","PR09xU19x");
+	while(input.search("cPa") != -1) input = input.replace("cPa","PR09xU38x");
+	while(input.search("cWb") != -1) input = input.replace("cWb","PR09xU46x");
+	while(input.search("meV") != -1) input = input.replace("meV","PR08xU11x");
+	while(input.search("mHz") != -1) input = input.replace("mHz","PR08xU19x");
+	while(input.search("mhz") != -1) input = input.replace("mhz","PR08xU19x");
+	while(input.search("mPa") != -1) input = input.replace("mPa","PR08xU38x");
+	while(input.search("mWb") != -1) input = input.replace("mWb","PR08xU46x");
 	while(input.search("lux") != -1) input = input.replace("lux","U27x");
 	while(input.search("mu") != -1) input = input.replace("mu","X13x");
 	while(input.search("pi") != -1) input = input.replace("pi","X15x");
@@ -974,66 +985,66 @@ function encode()//[global] encoding units, constants, etc. into a specific code
 	while(input.search("me") != -1) input = input.replace("me","X05x");
 	while(input.search("mp") != -1) input = input.replace("mp","X14x");
 	while(input.search("in") != -1) {input = input.replace("in","1");checkin = 1;}		
-	while(input.search("TA") != -1) input = input.replace("TA","P16xU05x");
-	while(input.search("TC") != -1) input = input.replace("TC","P16xU08x");
-	while(input.search("TF") != -1) input = input.replace("TF","P16xU14x");
-	while(input.search("Tg") != -1) input = input.replace("Tg","P16xU15x");
-	while(input.search("TH") != -1) input = input.replace("TH","P16xU20x");
-	while(input.search("TJ") != -1) input = input.replace("TJ","P16xU22x");
-	while(input.search("TK") != -1) input = input.replace("TK","P16xU24x");
-	while(input.search("Tl") != -1) input = input.replace("Tl","P16xU28x");
-	while(input.search("Tm") != -1) input = input.replace("Tm","P16xU33x");
-	while(input.search("Ts") != -1) input = input.replace("Ts","P16xU40x");
-	while(input.search("TS") != -1) input = input.replace("TS","P16xU42x");
-	while(input.search("TT") != -1) input = input.replace("TT","P16xU44x");
-	while(input.search("TV") != -1) input = input.replace("TV","P16xU45x");
-	while(input.search("TW") != -1) input = input.replace("TW","P16xU47x");
-	while(input.search("TN") != -1) input = input.replace("TN","P16xU35x");
-	while(input.search("GA") != -1) input = input.replace("GA","P15xU05x");
-	while(input.search("GC") != -1) input = input.replace("GC","P15xU08x");
-	while(input.search("GF") != -1) input = input.replace("GF","P15xU14x");
-	while(input.search("Gg") != -1) input = input.replace("Gg","P15xU15x");
-	while(input.search("GH") != -1) input = input.replace("GH","P15xU20x");
-	while(input.search("GJ") != -1) input = input.replace("GJ","P15xU22x");
-	while(input.search("GK") != -1) input = input.replace("GK","P15xU24x");
-	while(input.search("Gl") != -1) input = input.replace("Gl","P15xU28x");
-	while(input.search("Gm") != -1) input = input.replace("Gm","P15xU33x");
-	while(input.search("Gs") != -1) input = input.replace("Gs","P15xU40x");
-	while(input.search("GS") != -1) input = input.replace("GS","P15xU42x");
-	while(input.search("GT") != -1) input = input.replace("GT","P15xU44x");
-	while(input.search("GV") != -1) input = input.replace("GV","P15xU45x");
-	while(input.search("GW") != -1) input = input.replace("GW","P15xU47x");
-	while(input.search("GN") != -1) input = input.replace("GN","P15xU35x");
-	while(input.search("cA") != -1) input = input.replace("cA","P09xU05x");
-	while(input.search("cC") != -1) input = input.replace("cC","P09xU08x");
-	while(input.search("cF") != -1) input = input.replace("cF","P09xU14x");
-	while(input.search("cg") != -1) input = input.replace("cg","P09xU15x");
-	while(input.search("cH") != -1) input = input.replace("cH","P09xU20x");
-	while(input.search("cJ") != -1) input = input.replace("cJ","P09xU22x");
-	while(input.search("cK") != -1) input = input.replace("cK","P09xU24x");
-	while(input.search("cl") != -1) input = input.replace("cl","P09xU28x");
-	while(input.search("cm") != -1) input = input.replace("cm","P09xU33x");
-	while(input.search("cs") != -1) input = input.replace("cs","P09xU40x");
-	while(input.search("cS") != -1) input = input.replace("cS","P09xU42x");
-	while(input.search("cT") != -1) input = input.replace("cT","P09xU44x");
-	while(input.search("cV") != -1) input = input.replace("cV","P09xU45x");
-	while(input.search("cW") != -1) input = input.replace("cW","P09xU47x");
-	while(input.search("cN") != -1) input = input.replace("cN","P09xU35x");
-	while(input.search("mA") != -1) input = input.replace("mA","P08xU05x");
-	while(input.search("mC") != -1) input = input.replace("mC","P08xU08x");
-	while(input.search("mF") != -1) input = input.replace("mF","P08xU14x");
-	while(input.search("mg") != -1) input = input.replace("mg","P08xU15x");
-	while(input.search("mH") != -1) input = input.replace("mH","P08xU20x");
-	while(input.search("mJ") != -1) input = input.replace("mJ","P08xU22x");
-	while(input.search("mK") != -1) input = input.replace("mK","P08xU24x");
-	while(input.search("ml") != -1) input = input.replace("ml","P08xU28x");
-	while(input.search("mm") != -1) input = input.replace("mm","P08xU33x");
-	while(input.search("ms") != -1) input = input.replace("ms","P08xU40x");
-	while(input.search("mS") != -1) input = input.replace("mS","P08xU42x");
-	while(input.search("mT") != -1) input = input.replace("mT","P08xU44x");
-	while(input.search("mV") != -1) input = input.replace("mV","P08xU45x");
-	while(input.search("mW") != -1) input = input.replace("mW","P08xU47x");
-	while(input.search("mN") != -1) input = input.replace("mN","P08xU35x");
+	while(input.search("TA") != -1) input = input.replace("TA","PR16xU05x");
+	while(input.search("TC") != -1) input = input.replace("TC","PR16xU08x");
+	while(input.search("TF") != -1) input = input.replace("TF","PR16xU14x");
+	while(input.search("Tg") != -1) input = input.replace("Tg","PR16xU15x");
+	while(input.search("TH") != -1) input = input.replace("TH","PR16xU20x");
+	while(input.search("TJ") != -1) input = input.replace("TJ","PR16xU22x");
+	while(input.search("TK") != -1) input = input.replace("TK","PR16xU24x");
+	while(input.search("Tl") != -1) input = input.replace("Tl","PR16xU28x");
+	while(input.search("Tm") != -1) input = input.replace("Tm","PR16xU33x");
+	while(input.search("Ts") != -1) input = input.replace("Ts","PR16xU40x");
+	while(input.search("TS") != -1) input = input.replace("TS","PR16xU42x");
+	while(input.search("TT") != -1) input = input.replace("TT","PR16xU44x");
+	while(input.search("TV") != -1) input = input.replace("TV","PR16xU45x");
+	while(input.search("TW") != -1) input = input.replace("TW","PR16xU47x");
+	while(input.search("TN") != -1) input = input.replace("TN","PR16xU35x");
+	while(input.search("GA") != -1) input = input.replace("GA","PR15xU05x");
+	while(input.search("GC") != -1) input = input.replace("GC","PR15xU08x");
+	while(input.search("GF") != -1) input = input.replace("GF","PR15xU14x");
+	while(input.search("Gg") != -1) input = input.replace("Gg","PR15xU15x");
+	while(input.search("GH") != -1) input = input.replace("GH","PR15xU20x");
+	while(input.search("GJ") != -1) input = input.replace("GJ","PR15xU22x");
+	while(input.search("GK") != -1) input = input.replace("GK","PR15xU24x");
+	while(input.search("Gl") != -1) input = input.replace("Gl","PR15xU28x");
+	while(input.search("Gm") != -1) input = input.replace("Gm","PR15xU33x");
+	while(input.search("Gs") != -1) input = input.replace("Gs","PR15xU40x");
+	while(input.search("GS") != -1) input = input.replace("GS","PR15xU42x");
+	while(input.search("GT") != -1) input = input.replace("GT","PR15xU44x");
+	while(input.search("GV") != -1) input = input.replace("GV","PR15xU45x");
+	while(input.search("GW") != -1) input = input.replace("GW","PR15xU47x");
+	while(input.search("GN") != -1) input = input.replace("GN","PR15xU35x");
+	while(input.search("cA") != -1) input = input.replace("cA","PR09xU05x");
+	while(input.search("cC") != -1) input = input.replace("cC","PR09xU08x");
+	while(input.search("cF") != -1) input = input.replace("cF","PR09xU14x");
+	while(input.search("cg") != -1) input = input.replace("cg","PR09xU15x");
+	while(input.search("cH") != -1) input = input.replace("cH","PR09xU20x");
+	while(input.search("cJ") != -1) input = input.replace("cJ","PR09xU22x");
+	while(input.search("cK") != -1) input = input.replace("cK","PR09xU24x");
+	while(input.search("cl") != -1) input = input.replace("cl","PR09xU28x");
+	while(input.search("cm") != -1) input = input.replace("cm","PR09xU33x");
+	while(input.search("cs") != -1) input = input.replace("cs","PR09xU40x");
+	while(input.search("cS") != -1) input = input.replace("cS","PR09xU42x");
+	while(input.search("cT") != -1) input = input.replace("cT","PR09xU44x");
+	while(input.search("cV") != -1) input = input.replace("cV","PR09xU45x");
+	while(input.search("cW") != -1) input = input.replace("cW","PR09xU47x");
+	while(input.search("cN") != -1) input = input.replace("cN","PR09xU35x");
+	while(input.search("mA") != -1) input = input.replace("mA","PR08xU05x");
+	while(input.search("mC") != -1) input = input.replace("mC","PR08xU08x");
+	while(input.search("mF") != -1) input = input.replace("mF","PR08xU14x");
+	while(input.search("mg") != -1) input = input.replace("mg","PR08xU15x");
+	while(input.search("mH") != -1) input = input.replace("mH","PR08xU20x");
+	while(input.search("mJ") != -1) input = input.replace("mJ","PR08xU22x");
+	while(input.search("mK") != -1) input = input.replace("mK","PR08xU24x");
+	while(input.search("ml") != -1) input = input.replace("ml","PR08xU28x");
+	while(input.search("mm") != -1) input = input.replace("mm","PR08xU33x");
+	while(input.search("ms") != -1) input = input.replace("ms","PR08xU40x");
+	while(input.search("mS") != -1) input = input.replace("mS","PR08xU42x");
+	while(input.search("mT") != -1) input = input.replace("mT","PR08xU44x");
+	while(input.search("mV") != -1) input = input.replace("mV","PR08xU45x");
+	while(input.search("mW") != -1) input = input.replace("mW","PR08xU47x");
+	while(input.search("mN") != -1) input = input.replace("mN","PR08xU35x");
 	while(input.search("kB") != -1) input = input.replace("kB","X02x");
 	while(input.search("kb") != -1) input = input.replace("kb","X02x");
 	while(input.search("A") != -1) input = input.replace("A","U05x");
@@ -1055,16 +1066,16 @@ function encode()//[global] encoding units, constants, etc. into a specific code
 	while(input.search("q") != -1) input = input.replace("q","X07x");
 	while(input.search("G") != -1) input = input.replace("G","X10x");
 	while(input.search("h") != -1) input = input.replace("h","X12x");
-	while(input.search("M") != -1) input = input.replace("M","P14x");
-	while(input.search("k") != -1) input = input.replace("k","P13x");
-	while(input.search("d") != -1) input = input.replace("d","P10x");
-	while(input.search("n") != -1) input = input.replace("n","P06x");
-	while(input.search("p") != -1) input = input.replace("p","P05x");
-	while(input.search("f") != -1) input = input.replace("f","P04x");
+	while(input.search("M") != -1) input = input.replace("M","PR14x");
+	while(input.search("k") != -1) input = input.replace("k","PR13x");
+	while(input.search("d") != -1) input = input.replace("d","PR10x");
+	while(input.search("n") != -1) input = input.replace("n","PR06x");
+	while(input.search("p") != -1) input = input.replace("p","PR05x");
+	while(input.search("f") != -1) input = input.replace("f","PR04x");
 	while(input.search("\u03A9") != -1) input = input.replace("\u03A9","U36x");
 	while(input.search("\u2126") != -1) input = input.replace("\u2126","U36x");
-	while(input.search("\u03BC") != -1) input = input.replace("\u03BC","P07x");
-	while(input.search("\u00B5") != -1) input = input.replace("\u00B5","P07x");	
+	while(input.search("\u03BC") != -1) input = input.replace("\u03BC","PR07x");
+	while(input.search("\u00B5") != -1) input = input.replace("\u00B5","PR07x");	
 }
 
 function decode(_begin,_end)//[local] decode the units, constants, and so on .
@@ -1331,9 +1342,9 @@ function decode(_begin,_end)//[local] decode the units, constants, and so on .
 			_scan.relink(_cache);
 			_scan = _cache;
 		}
-		else if(_scan.from.type != "1" && _scan.type == "U" && _scan.to.type == "1" && _scan.to.to.type == "x")
+		else if((_scan.from.type != "1" || _scan.from.type != "x") && _scan.type == "U" && _scan.to.type == "1" && _scan.to.to.type == "x")
 		errorcode = "misplaced unit";
-		else if(_scan.from.type != "1" && _scan.type == "Y" && _scan.to.type == "1" && _scan.to.to.type == "x" && _scan.to.to.to.type == "1")
+		else if((_scan.from.type != "1" || _scan.from.type != "x") && _scan.type == "Y" && _scan.to.type == "1" && _scan.to.to.type == "x" && _scan.to.to.to.type == "1")
 		{
 			_cache = _scan.to.to.to;
 			code = _scan.to.value;
@@ -1450,7 +1461,7 @@ function decode(_begin,_end)//[local] decode the units, constants, and so on .
 			}
 			_cache.to.relink(_scan);
 		}
-		else if(_scan.from.type != "1" && _scan.type == "X" && _scan.to.type == "1" && _scan.to.to.type == "x" && _scan.to.to.to.type != "1")
+		else if((_scan.from.type != "1" || _scan.from.type != "x") && _scan.type == "X" && _scan.to.type == "1" && _scan.to.to.type == "x" && _scan.to.to.to.type != "1")
 		{
 			_cache = _scan.to.to.to;
 			code = _scan.to.value;
@@ -1558,90 +1569,124 @@ function decode(_begin,_end)//[local] decode the units, constants, and so on .
 	}
 }
 
-function prefix(_begin,_end)//[local] decode the prefixes.
+function prefix()//[local] decode the prefixes.
 {
+	var toread = new Data();
+	var res;
 	var _scan = new Data();
-	var _cache = new Data();
+	var _star = new Data();
+	var _open = new Data();
+	var _close = new Data();
+	var _numeric = new Data();
+	var _lunit = new Data();
+	var _runit = new Data();
+	var _fend = new Data();
 	var code;
-	var unit_pow;
-	var unitcheck;
+	var p;
+	var prefixcheck = 0;
+	_begin = Bgn;
+	_end = End;
 	_scan = _begin.to;
-	while(_scan != _end)
+	i=100;
+	
+	while(prefixcheck != -1)
 	{
-		if(_scan.from.type == "1" && _scan.type == "P" && _scan.to.type == "1" && _scan.to.to.type == "x")
+		while(_scan != _end)
 		{
-			_cache = _scan.from;
-			code = _scan.to.value;
-			switch(code)
+			if((_scan.from.type == "1" || _scan.from.type == "x" || _scan.from.type == ")") && _scan.type == "P" && _scan.to.type == "R" && _scan.to.to.type == "1" && _scan.to.to.to.type == "x" && _scan.to.to.to.to.type == "U" && _scan.to.to.to.to.to.type == "1" && _scan.to.to.to.to.to.to.type == "x")
 			{
-				case 1:
-				_cache.value*=1e-24;
-				break;
-				case 2:
-				_cache.value*=1e-21;
-				break;
-				case 3:
-				_cache.value*=1e-18;
-				break;
-				case 4:
-				_cache.value*=1e-15;
-				break;
-				case 5:
-				_cache.value*=1e-12;
-				break;
-				case 6:
-				_cache.value*=1e-9;
-				break;
-				case 7:
-				_cache.value*=1e-6;
-				break;
-				case 8:
-				_cache.value*=1e-3;
-				break;
-				case 9:
-				_cache.value*=1e-2;
-				break;
-				case 10:
-				_cache.value*=1e-1;
-				break;
-				case 11:
-				_cache.value*=1e+1;
-				break;
-				case 12:
-				_cache.value*=1e+2;
-				break;
-				case 13:
-				_cache.value*=1e+3;
-				break;
-				case 14:
-				_cache.value*=1e+6;
-				break;
-				case 15:
-				_cache.value*=1e+9;
-				break;
-				case 16:
-				_cache.value*=1e+12;
-				break;
-				case 17:
-				_cache.value*=1e+15;
-				break;
-				case 18:
-				_cache.value*=1e+18;
-				break;
-				case 19:
-				_cache.value*=1e+21;
-				break;
-				case 20:
-				_cache.value*=1e+24;
-				break;
-				default:
-				return;
-				break;
-			}
-			_scan.to.to.to.relink(_cache);
-			_scan = _cache;
+				code = _scan.to.to.value;
+				_star = _scan;
+				_open = _star.to;
+				_numeric = _open.to;
+				_close = _numeric.to;
+				_lunit = _close.to;
+				_runit = _lunit.to.to;
+				_fend = _runit.to;
+				
+				_star.type = "*";
+				_open.type = "(";
+				_close.type = ")";
+				
+				_fend.relink(_close);
+				_close.relink(_runit);
+				_lunit.relink(_numeric);
+				
+				switch(code)
+				{
+					case 1:
+					p = 1e-24;
+					break;
+					case 2:
+					p = 1e-21;
+					break;
+					case 3:
+					p = 1e-18;
+					break;
+					case 4:
+					p = 1e-15;
+					break;
+					case 5:
+					p = 1e-12;
+					break;
+					case 6:
+					p = 1e-9;
+					break;
+					case 7:
+					p = 1e-6;
+					break;
+					case 8:
+					p = 1e-3;
+					break;
+					case 9:
+					p = 1e-2;
+					break;
+					case 10:
+					p = 1e-1;
+					break;
+					case 11:
+					p = 1e+1;
+					break;
+					case 12:
+					p = 1e+2;
+					break;
+					case 13:
+					p = 1e+3;
+					break;
+					case 14:
+					p = 1e+6;
+					break;
+					case 15:
+					p = 1e+9;
+					break;
+					case 16:
+					p = 1e+12;
+					break;
+					case 17:
+					p = 1e+15;
+					break;
+					case 18:
+					p = 1e+18;
+					break;
+					case 19:
+					p = 1e+21;
+					break;
+					case 20:
+					p = 1e+24;
+					break;
+					default:
+					return;
+					break;
+				}
+				_numeric.value = p;
+			}		
+			_scan = _scan.to;
 		}
-		
-		_scan = _scan.to;
+		res = "";
+		for(toread = Bgn.to; toread!=End;toread = toread.to)
+		{
+			res = res+toread.type;
+		}
+		prefixcheck = res.search("PR");
 	}
 }
