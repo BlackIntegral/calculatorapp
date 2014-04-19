@@ -6,8 +6,8 @@
 </script>
 <style type="text/css">
  .textfield{
-  width:150px;
-  height:20px;
+  width:250px;
+  height:30px;
   border: 2px solid;
   background-color: ffffff;
   text-align:left;
@@ -19,6 +19,8 @@
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   border-top-left-radius: 5px;
+  font-size:11px;
+  resize: none;
  }
  .submitfield{
   width:30px;
@@ -27,6 +29,7 @@
   background-color: ffcd00;
   border-bottom-right-radius: 5px;
   border-top-left-radius: 5px;
+  font-size:11px;
  }
  .char{
   width:30px;
@@ -104,8 +107,8 @@
 <body>
 <br><br><br><br><br><center>
 <textarea readonly='readonly' id='output' wrap='off' class='outputfield'></textarea>
-<br><br>
-<form name='finput' autocomplete = 'off' action='javascript:io()' method='get'><input type='button' contenteditable="false" class = 'textfield' name='input' id='inp' onSubmit='io()'> <input type='button' class = 'submitfield' name='compute' value='go!' onClick='io()'></form>
+<br>
+<textarea readonly='readonly' id='inp' wrap='soft' class='textfield'></textarea>
 <div id="Sml" style="position:relative; visibility:visible">
 <input type='button' class = 'char' value='1' onClick='Add("1")'>
 <input type='button' class = 'char' value='2' onClick='Add("2")'>
@@ -162,6 +165,7 @@
 <input type='button' class = 'char2' value='Shift' onClick='Shift()'>
 <input type='button' class = 'space' value='Space' onClick='Add(" ")'>
 <input type='button' class = 'char2' value='Del' onClick='Del()'>
+<input type='button' class = 'char2' value='Enter' onClick='io()'>
 <br>
 <input type='button' class = 'hide'>
 <br>
@@ -227,6 +231,7 @@
 <input type='button' class = 'char2' value='Shift' onClick='Shift()'>
 <input type='button' class = 'space' value='Space' onClick='Add(" ")'>
 <input type='button' class = 'char2' value='Del' onClick='Del()'>
+<input type='button' class = 'char2' value='Enter' onClick='io()'>
 <br>
 <input type='button' class = 'hide'>
 <br>
