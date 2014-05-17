@@ -27,32 +27,6 @@ function Data()//Declaring the struct used in linked list
 		};
 }
 
-function Del()
-{
-	var _inp = document.getElementById("inp").value;
-	var _N = _inp.length;
-	document.getElementById("inp").value = _inp.slice(0,_N-1);
-}
-
-function Shift()
-{
-	switch(s_value)
-	{
-		case 0:
-		document.getElementById("Sml").style.visibility='hidden';
-		document.getElementById("Cap").style.visibility='visible';
-		s_value = 1;
-		break;
-		case 1:
-		document.getElementById("Sml").style.visibility='visible';
-		document.getElementById("Cap").style.visibility='hidden';
-		s_value = 0;
-		break;
-		default:
-		break;
-	}
-}
-
 function Help()
 {
 	output = document.getElementById("output");
@@ -115,10 +89,10 @@ function Help()
 	output.innerHTML += "-----------------------------------"+"\n";
 	output.innerHTML += " 1) Parentheses"+"\n";
 	output.innerHTML += " 2) Factorial"+"\n";
-	output.innerHTML += " 3) Exponentiation"+"\n";
-	output.innerHTML += " 4) Negation"+"\n";
-	output.innerHTML += " 5) Scientific notation"+"\n";
-	output.innerHTML += " 6) Functions & Units (left to right)"+"\n";
+	output.innerHTML += " 3) Functions & Units (left to right)"+"\n";
+	output.innerHTML += " 4) Exponentiation"+"\n";
+	output.innerHTML += " 5) Negation"+"\n";
+	output.innerHTML += " 6) Scientific notation"+"\n";
 	output.innerHTML += " 7) Division"+"\n";
 	output.innerHTML += " 8) Multiplication"+"\n";
 	output.innerHTML += " 9) Addition"+"\n";
@@ -309,19 +283,7 @@ function Add(x)
 
 function Clear()
 {
-	unitdisplay = "";
-	output = document.getElementById("output");
-	for(i=0;i<6;i++)
-	{
-		if(Ans.unit[i] != 0 && Ans.unit[i] != 1)
-		{
-			unitdisplay += " "+unitshow[i]+"^"+Ans.unit[i];
-		}
-		else if(Ans.unit[i] == 1)
-		unitdisplay += " "+unitshow[i];
-	}
-	display = format(Ans.value.toPrecision(6))+" "+unitdisplay+" ";
-	output.innerHTML = "ans\n&nbsp;&nbsp;&nbsp;= "+display;
+	document.getElementById("output").innerHTML = "";
 }
 
 function io()//input, operate, and output the result
@@ -369,10 +331,10 @@ function io()//input, operate, and output the result
 				}
 				// Begin local operations ---------------------------------------
 				Factorial(_begin,_end);
+				decode(_begin,_end);
 				power(_begin,_end);
 				sign_adjust(_begin,_end);
 				E(_begin,_end);
-				decode(_begin,_end);
 				sign_adjust(_begin,_end);
 				devision(_begin,_end);
 				product(_begin,_end);
@@ -396,10 +358,10 @@ function io()//input, operate, and output the result
 		_end = End;
 		// Begin local operations -----------------------------------------------
 		Factorial(_begin,_end);
+		decode(_begin,_end);
 		power(_begin,_end);
 		sign_adjust(_begin,_end);
 		E(_begin,_end);
-		decode(_begin,_end);
 		sign_adjust(_begin,_end);
 		devision(_begin,_end);
 		product(_begin,_end);
@@ -774,7 +736,9 @@ function power(_begin,_end)
 			errorcode = "unit error";
 		}
 		else if( _hat.type == "^" && (_hat.from.type != "1" || _hat.to.type != "1"))
-		errorcode = "scientific notation syntax";
+		{
+			errorcode = "scientific notation syntax";
+		}
 		_hat = _hat.to;
 	}
 }

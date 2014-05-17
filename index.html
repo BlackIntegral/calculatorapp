@@ -1,248 +1,71 @@
 <html>
 <head>
-<script language='JavaScript' src='orb.js'>
-</script>
-<script language='JavaScript' src='math.js'>
-</script>
+<script type="text/javascript" src="math.js"></script>
+<script type="text/javascript" src="orb.js"></script>
+<script type="text/javascript" src="button.js"></script>
 <style type="text/css">
  .textfield{
   width:250px;
   height:30px;
-  border: 2px solid;
-  background-color: ffffff;
   text-align:left;
-  border-bottom-color:ffcd00;
-  border-right-color:ffefa9;
-  border-top-color:ffefa9;
-  border-left-color:ffcd00;
-  border-top-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-top-left-radius: 5px;
+  border: 1px solid;
+  border-color: 22FF00; 
+  background-color: 000000;
+  font-size:11px;
+  color: 22FF00;
   font-size:11px;
   resize: none;
- }
- .submitfield{
-  width:30px;
-  height:20px;
-  border: none;
-  background-color: ffcd00;
-  border-bottom-right-radius: 5px;
-  border-top-left-radius: 5px;
-  font-size:11px;
  }
  .char{
   width:30px;
   height:18px;
   border: 1px solid;
-  border-color: af8c01; 
-  background-color: ffcd00;
-  border-top-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-top-left-radius: 5px;
+  border-color: 22FF00; 
+  background-color: 000000;
   font-size:11px;
+  color: 22FF00;
  }
- .space{
-  width:135px;
+ .buttons{
+  width:40px;
   height:18px;
   border: 1px solid;
-  border-color: af8c01; 
-  background-color: ffcd00;
-  border-top-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-top-left-radius: 5px;
+  border-color: 22FF00; 
+  background-color: 000000;
   font-size:11px;
- }
- .char2{
-  width:45px;
-  height:18px;
-  border: 1px solid;
-  border-color: af8c01; 
-  background-color: ffcd00;
-  border-top-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-top-left-radius: 5px;
-  font-size:11px;
- }
- .other{
-  height:18px;
-  width:50px;
-  border: 1px solid;
-  border-color: af8c01;
-  background-color: ffe164;
-  border-top-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-top-left-radius: 5px;
- }
- .hide{
-  height:18px;
-  width:50px;
-  visibility:hidden;
+  color: 22FF00;
  }
  .outputfield{
   width:300px;
-  height:100px;
-  border: none;
-  font-size:10;
-  border-style: double;
-  border-bottom-color:ffcd00;
-  border-right-color:ffefa9;
-  border-top-color:ffefa9;
-  border-left-color:ffcd00;
+  height:300px;
+  text-align:left;
+  border: 1px solid;
+  border-color: 22FF00; 
+  background-color: 000000;
+  font-size:11px;
+  color: 22FF00;
+  font-size:11px;
   resize: none;
- }
- body{
-  background-color: #333333;
-  background-image: url("bg.png");
-  background-position:center top;
-  background-size:100%;
-  background-repeat:no-repeat;
  }
 </style>
 </head>
-<body>
-<br><br><br><br><br><center>
+<body bgcolor = black>
+<br>
+<h1></h1>
+<br>
+<center>
 <textarea readonly='readonly' id='output' wrap='off' class='outputfield'></textarea>
 <br>
-<textarea readonly='readonly' id='inp' wrap='soft' class='textfield'></textarea>
-<div id="Sml" style="position:relative; visibility:visible">
-<input type='button' class = 'char' value='1' onClick='Add("1")'>
-<input type='button' class = 'char' value='2' onClick='Add("2")'>
-<input type='button' class = 'char' value='3' onClick='Add("3")'>
-<input type='button' class = 'char' value='4' onClick='Add("4")'>
-<input type='button' class = 'char' value='5' onClick='Add("5")'>
-<input type='button' class = 'char' value='6' onClick='Add("6")'>
-<input type='button' class = 'char' value='7' onClick='Add("7")'>
-<input type='button' class = 'char' value='8' onClick='Add("8")'>
-<input type='button' class = 'char' value='9' onClick='Add("9")'>
-<input type='button' class = 'char' value='0' onClick='Add("0")'>
-<br>
-<input type='button' class = 'char' value='(' onClick='Add("(")'>
-<input type='button' class = 'char' value=')' onClick='Add(")")'>
-<input type='button' class = 'char' value='+' onClick='Add("+")'>
-<input type='button' class = 'char' value='-' onClick='Add("-")'>
-<input type='button' class = 'char' value='*' onClick='Add("*")'>
-<input type='button' class = 'char' value='/' onClick='Add("/")'>
-<input type='button' class = 'char' value='^' onClick='Add("^")'>
-<input type='button' class = 'char' value='.' onClick='Add(".")'>
-<input type='button' class = 'char' value="'" onClick='Add("&#39;")'>
-<input type='button' class = 'char' value="!" onClick='Add("!")'>
-<br>
-<input type='button' class = 'char' value='q' onClick='Add("q")'>
-<input type='button' class = 'char' value='w' onClick='Add("w")'>
-<input type='button' class = 'char' value='e' onClick='Add("e")'>
-<input type='button' class = 'char' value='r' onClick='Add("r")'>
-<input type='button' class = 'char' value='t' onClick='Add("t")'>
-<input type='button' class = 'char' value='y' onClick='Add("y")'>
-<input type='button' class = 'char' value='u' onClick='Add("u")'>
-<input type='button' class = 'char' value='i' onClick='Add("i")'>
-<input type='button' class = 'char' value='o' onClick='Add("o")'>
-<input type='button' class = 'char' value='p' onClick='Add("p")'>
-<br>
-<input type='button' class = 'char' value='a' onClick='Add("a")'>
-<input type='button' class = 'char' value='s' onClick='Add("s")'>
-<input type='button' class = 'char' value='d' onClick='Add("d")'>
-<input type='button' class = 'char' value='f' onClick='Add("f")'>
-<input type='button' class = 'char' value='g' onClick='Add("g")'>
-<input type='button' class = 'char' value='h' onClick='Add("h")'>
-<input type='button' class = 'char' value='j' onClick='Add("j")'>
-<input type='button' class = 'char' value='k' onClick='Add("k")'>
-<input type='button' class = 'char' value='l' onClick='Add("l")'>
-<br>
+<form onsubmit='io()' action='Javascript:void(0)'>
+<input type='text' id='inp' wrap='soft' class='textfield' autocomplete='off'></form>
 <input type='button' class = 'char' value='&mu;' onClick='Add("&mu;")'>
-<input type='button' class = 'char' value='z' onClick='Add("z")'>
-<input type='button' class = 'char' value='x' onClick='Add("x")'>
-<input type='button' class = 'char' value='c' onClick='Add("c")'>
-<input type='button' class = 'char' value='v' onClick='Add("v")'>
-<input type='button' class = 'char' value='b' onClick='Add("b")'>
-<input type='button' class = 'char' value='n' onClick='Add("n")'>
-<input type='button' class = 'char' value='m' onClick='Add("m")'>
 <input type='button' class = 'char' value='&Omega;' onClick='Add("&Omega;")'>
 <br>
-<input type='button' class = 'char2' value='Shift' onClick='Shift()'>
-<input type='button' class = 'space' value='Space' onClick='Add(" ")'>
-<input type='button' class = 'char2' value='Del' onClick='Del()'>
-<input type='button' class = 'char2' value='Enter' onClick='io()'>
-<br>
-<input type='button' class = 'hide'>
-<br>
-<input type='button' class = 'other' value='help' onClick='Help()'>
-<input type='button' class = 'other' value='units' onClick='Units()'>
-<input type='button' class = 'other' value='const' onClick='Const()'>
-<input type='button' class = 'other' value='clear' onClick='Clear()'>
-<input type='button' class = 'other' value='info' onClick='Info()'>
-</div>
-<div id="Cap" style="position:relative; top:-160px; visibility:hidden">
-<input type='button' class = 'char' value='1' onClick='Add("1")'>
-<input type='button' class = 'char' value='2' onClick='Add("2")'>
-<input type='button' class = 'char' value='3' onClick='Add("3")'>
-<input type='button' class = 'char' value='4' onClick='Add("4")'>
-<input type='button' class = 'char' value='5' onClick='Add("5")'>
-<input type='button' class = 'char' value='6' onClick='Add("6")'>
-<input type='button' class = 'char' value='7' onClick='Add("7")'>
-<input type='button' class = 'char' value='8' onClick='Add("8")'>
-<input type='button' class = 'char' value='9' onClick='Add("9")'>
-<input type='button' class = 'char' value='0' onClick='Add("0")'>
-<br>
-<input type='button' class = 'char' value='(' onClick='Add("(")'>
-<input type='button' class = 'char' value=')' onClick='Add(")")'>
-<input type='button' class = 'char' value='+' onClick='Add("+")'>
-<input type='button' class = 'char' value='-' onClick='Add("-")'>
-<input type='button' class = 'char' value='*' onClick='Add("*")'>
-<input type='button' class = 'char' value='/' onClick='Add("/")'>
-<input type='button' class = 'char' value='^' onClick='Add("^")'>
-<input type='button' class = 'char' value='.' onClick='Add(".")'>
-<input type='button' class = 'char' value="'" onClick='Add("&#39;")'>
-<input type='button' class = 'char' value="!" onClick='Add("!")'>
-<br>
-<input type='button' class = 'char' value='Q' onClick='Add("Q")'>
-<input type='button' class = 'char' value='W' onClick='Add("W")'>
-<input type='button' class = 'char' value='E' onClick='Add("E")'>
-<input type='button' class = 'char' value='R' onClick='Add("R")'>
-<input type='button' class = 'char' value='T' onClick='Add("T")'>
-<input type='button' class = 'char' value='Y' onClick='Add("Y")'>
-<input type='button' class = 'char' value='U' onClick='Add("U")'>
-<input type='button' class = 'char' value='I' onClick='Add("I")'>
-<input type='button' class = 'char' value='O' onClick='Add("O")'>
-<input type='button' class = 'char' value='P' onClick='Add("P")'>
-<br>
-<input type='button' class = 'char' value='A' onClick='Add("A")'>
-<input type='button' class = 'char' value='S' onClick='Add("S")'>
-<input type='button' class = 'char' value='D' onClick='Add("D")'>
-<input type='button' class = 'char' value='F' onClick='Add("F")'>
-<input type='button' class = 'char' value='G' onClick='Add("G")'>
-<input type='button' class = 'char' value='H' onClick='Add("H")'>
-<input type='button' class = 'char' value='J' onClick='Add("J")'>
-<input type='button' class = 'char' value='K' onClick='Add("K")'>
-<input type='button' class = 'char' value='L' onClick='Add("L")'>
-<br>
-<input type='button' class = 'char' value='&mu;' onClick='Add("&mu;")'>
-<input type='button' class = 'char' value='Z' onClick='Add("Z")'>
-<input type='button' class = 'char' value='X' onClick='Add("X")'>
-<input type='button' class = 'char' value='C' onClick='Add("C")'>
-<input type='button' class = 'char' value='V' onClick='Add("V")'>
-<input type='button' class = 'char' value='B' onClick='Add("B")'>
-<input type='button' class = 'char' value='N' onClick='Add("N")'>
-<input type='button' class = 'char' value='M' onClick='Add("M")'>
-<input type='button' class = 'char' value='&Omega;' onClick='Add("&Omega;")'>
-<br>
-<input type='button' class = 'char2' value='Shift' onClick='Shift()'>
-<input type='button' class = 'space' value='Space' onClick='Add(" ")'>
-<input type='button' class = 'char2' value='Del' onClick='Del()'>
-<input type='button' class = 'char2' value='Enter' onClick='io()'>
-<br>
-<input type='button' class = 'hide'>
-<br>
-<input type='button' class = 'other' value='help' onClick='Help()'>
-<input type='button' class = 'other' value='units' onClick='Units()'>
-<input type='button' class = 'other' value='const' onClick='Const()'>
-<input type='button' class = 'other' value='clear' onClick='Clear()'>
-<input type='button' class = 'other' value='info' onClick='Info()'>
-</div>
+<input type='button' class = 'buttons' value='Help' onClick='Help()'>
+<input type='button' class = 'buttons' value='Info' onClick='Info()'>
+<input type='button' class = 'buttons' value='Const' onClick='Const()'>
+<input type='button' class = 'buttons' value='Units' onClick='Units()'>
+<input type='button' class = 'buttons' value='Clear' onClick='Clear()'>
 </center>
+<br>
 </body>
 </html>
