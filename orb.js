@@ -127,13 +127,12 @@ function Info()
 {
 	output = document.getElementById("output");
 	output.innerHTML = "------------------------------------"+"\n";
-	output.innerHTML += "Orb v1.01 (c), 2014\n";
+	output.innerHTML += "Orb v1.02a (c), 2014\n";
 	output.innerHTML += "The JS scientific calculator.\n";
 	output.innerHTML += "-----------------------------------"+"\n";
-	output.innerHTML += "Update 4/20/2014"+"\n";
+	output.innerHTML += "Update 5/17/2014"+"\n";
 	output.innerHTML += "What's new"+"\n";
-	output.innerHTML += " - add a factorial button"+"\n";
-	output.innerHTML += " - add functions list in [help] menu"+"\n";
+	output.innerHTML += " - changing interface"+"\n";
 	output.innerHTML += " - fix some bugs"+"\n";
 	output.innerHTML += "-----------------------------------"+"\n";
 	output.innerHTML += "Developer and designer:"+"\n";

@@ -17,21 +17,30 @@
   resize: none;
  }
  .char{
-  width:30px;
-  height:18px;
+  width:50px;
+  height:30px;
   border: 1px solid;
   border-color: 22FF00; 
   background-color: 000000;
-  font-size:11px;
+  font-size:15px;
   color: 22FF00;
  }
- .buttons{
-  width:40px;
-  height:18px;
+ .button1{
+  width:65px;
+  height:30px;
   border: 1px solid;
   border-color: 22FF00; 
   background-color: 000000;
-  font-size:11px;
+  font-size:15px;
+  color: 22FF00;
+ }
+ .button2{
+  width:100px;
+  height:25px;
+  border: 1px solid;
+  border-color: 22FF00; 
+  background-color: 000000;
+  font-size:15px;
   color: 22FF00;
  }
  .outputfield{
@@ -50,21 +59,22 @@
 </head>
 <body bgcolor = black>
 <br>
-<h1></h1>
-<br>
 <center>
+<font color = '22ff00' size = 5>ORB</font><font color = '22ff00' size = 2><sup> (TM)</sup></font>
+<br><br>
 <textarea readonly='readonly' id='output' wrap='off' class='outputfield'></textarea>
 <br>
 <form onsubmit='io()' action='Javascript:void(0)'>
 <input type='text' id='inp' wrap='soft' class='textfield' autocomplete='off'></form>
 <input type='button' class = 'char' value='&mu;' onClick='Add("&mu;")'>
 <input type='button' class = 'char' value='&Omega;' onClick='Add("&Omega;")'>
-<br>
-<input type='button' class = 'buttons' value='Help' onClick='Help()'>
-<input type='button' class = 'buttons' value='Info' onClick='Info()'>
-<input type='button' class = 'buttons' value='Const' onClick='Const()'>
-<input type='button' class = 'buttons' value='Units' onClick='Units()'>
-<input type='button' class = 'buttons' value='Clear' onClick='Clear()'>
+<br><br>
+<input type='button' class = 'button1' value='Help' onClick='Help()'> 
+<input type='button' class = 'button1' value='Const' onClick='Const()'> 
+<input type='button' class = 'button1' value='Units' onClick='Units()'> 
+<input type='button' class = 'button1' value='Clear' onClick='Clear()'>
+<br><font size = '1px'></font><br>
+<input type='button' class = 'button2' value='Info' onClick='Info()'>
 </center>
 <br>
 </body>
