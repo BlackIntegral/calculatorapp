@@ -1,0 +1,12 @@
+add const
+{
+	Avogadro number;
+}
+add unit
+{
+	erg;
+}
+error
+{
+	1E2J != 100J;
+}
